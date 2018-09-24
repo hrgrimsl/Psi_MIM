@@ -1,7 +1,7 @@
 # MIM
 Clone this repo with:
 
-git clone github.com/hrgrimsl/Psi_MIM
+git clone github.com/hrgrimsl/Psi_MIM.git
 
 You will need a working Psi4 installation; binary and source should both work.  Instructions available here:
 
