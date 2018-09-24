@@ -56,6 +56,8 @@ bases = lines[3].split("/")
 lil_bas = str(bases[0])
 big_bas = str(bases[1])
 scratchdir = str(lines[4])
+if os.path.exists('scratchdir')==False:
+    os.system('mkdir '+scratchdir)
 
 
 def run_scf_template(name, **kwargs):
