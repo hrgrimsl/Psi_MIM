@@ -8,7 +8,7 @@ import os
 from frag_classes import *
 from frag_methods import *
 from cython_pie import *
-from cython_pie import cython_pie
+from cython_pie import cython_pie as cpie
 
 
 def add_up_atoms(frag_list, n_atoms):
@@ -50,7 +50,7 @@ def Fragment(args):
     primary_frags = full_system.construct_frag_dict()
 
     #Line in question
-    final_frag_list = cython_pie(primary_frags)
+    final_frag_list = cpie(primary_frags)
     full_system.make_frag_objects(final_frag_list)
     scratchdir = str(args['scratch'])
     if os.path.exists(str(scratchdir)):
