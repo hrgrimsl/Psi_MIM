@@ -1,0 +1,1 @@
+/home/harper/psi4conda/bin/g++ -fPIC  -march=native -fopenmp  -shared  -o scf_template.so CMakeFiles/scf_template.dir/scf.cc.o CMakeFiles/scf_template.dir/plugin.cc.o -Wl,-rpath,/home/harper/psi4conda/lib/python3.6/site-packages/psi4 /home/harper/psi4conda/lib/python3.6/site-packages/psi4/core.so 
