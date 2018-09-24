@@ -1,0 +1,47 @@
+# PYTHONPATH must include directory above plugin directory.
+#     Define either externally or here, then import plugin.
+sys.path.insert(0, '.')
+
+import os
+
+#Set this up like a dictionary
+SI = {
+'name': 'carbonyl',
+'basis': 'sto-3g/sto-3g',
+'frags': '1/3',
+'methods': 'scf/scf',
+'scratch': 'scr'
+}
+
+sifile = open('SI.txt', 'w')
+sifile.write(SI['name']+'\n')
+sifile.write(SI['frags']+'\n')
+sifile.write(SI['methods']+'\n')
+sifile.write(SI['basis']+'\n')
+sifile.write(SI['scratch']+'\n')
+sifile.close()
+import scf_template
+
+molecule {
+0 1
+   C       -5.81834        1.95784        0.00321
+   C       -4.60398        1.03921        0.01221
+   H       -6.56185        1.60995        0.72787
+   H       -6.29444        1.95236       -0.98284
+   H       -5.56211        2.99251        0.25102
+   C       -3.28867        1.81755       -0.01279
+   H       -4.65680        0.36214       -0.84887
+   H       -4.63398        0.41213        0.91116
+   C       -2.08978        0.87197       -0.03621
+   H       -3.23017        2.46357        0.87255
+   H       -3.25957        2.47726       -0.88863
+   C       -0.76111        1.60655       -0.00038
+   H       -2.11360        0.26269       -0.94636
+   H       -2.12535        0.20437        0.83200
+   C        0.47275        0.74064       -0.00346
+   H        0.43687        0.04705        0.84038
+   H        1.36383        1.36666        0.09514
+   H        0.52803        0.18737       -0.94407
+   O       -0.67576        2.83228        0.01829
+}
+optimize('scf_template')
