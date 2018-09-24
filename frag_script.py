@@ -50,7 +50,7 @@ def Fragment(args):
     primary_frags = full_system.construct_frag_dict()
 
     #Line in question
-    final_frag_list = cython_pie(primary_frags)
+    final_frag_list = cython_pie.cython_pie(primary_frags)
     full_system.make_frag_objects(final_frag_list)
     scratchdir = str(args['scratch'])
     if os.path.exists(str(scratchdir)):
