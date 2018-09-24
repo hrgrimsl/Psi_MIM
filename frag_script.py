@@ -8,6 +8,7 @@ import os
 from frag_classes import *
 from frag_methods import *
 from cython_pie import *
+from cython_pie import cython_pie
 
 
 def add_up_atoms(frag_list, n_atoms):
