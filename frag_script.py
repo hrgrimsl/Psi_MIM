@@ -7,7 +7,8 @@ import os
 
 from frag_classes import *
 from frag_methods import *
-from cython_pie import *
+#from cython_pie import *
+import cython_pie
 
 
 
