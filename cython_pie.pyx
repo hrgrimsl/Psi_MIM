@@ -31,7 +31,7 @@ cdef cython_get_next_layer(dict next_layer, dict final_frag_list, int sign):
         cython_get_next_layer(next_layer2, final_frag_list, sign2)
 
 
-cpdef cython_pie(primary_frags):
+cpdef cpie(primary_frags):
     """
     This function expects a dictionary of the following form:
         [(3,6,7,8)] = [frag#, frag coeff]
