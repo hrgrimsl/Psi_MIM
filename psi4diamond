@@ -6,7 +6,7 @@ import os
 
 #Set this up like a dictionary
 SI = {
-'name': 'diamond_open',
+'name': 'diamond',
 'basis': 'sto-3g/sto-3g',
 'frags': '-1/1',
 'methods': 'scf/scf',
