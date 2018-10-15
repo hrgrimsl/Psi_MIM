@@ -5,7 +5,7 @@ import cProfile
 import copy as cp
 from frag_methods import *
 from shutil import copyfile
-from cython_pie import cython_pie
+
 
 '''
 Unfragmented system
@@ -33,6 +33,7 @@ class Molecule:
         self.file_name = ""
         self.tree = ''
         self.covrad = form_covalent_radii()
+
 
     def parse_cml(self, file_name):
         self.file_name = file_name
@@ -163,69 +164,6 @@ class Molecule:
             self.dict[frag_tuple] = [frag.index, 1]
         return self.dict
 
-    '''
-    def get_next_layer(self, next_layer, final_frag_list, sign):
-        sign2 = -1*sign
-        for f2 in next_layer:
-            next_layer2 = {}
-            for f3 in next_layer:
-                if next_layer[f2][0] >= next_layer[f3][0]:
-                    continue
-                f23 = tuple(sorted(set(f2).intersection(f3)))
-                if len(f23) > 0:
-                    if f23 in next_layer2:
-                        next_layer2[f23][1] += 1
-                    else:
-                        next_layer2[f23] = [len(next_layer2), 1]
-            for f2 in next_layer2:
-                if next_layer2[f2][1] == 0:
-                    continue
-                if f2 in final_frag_list:
-                    final_frag_list[f2][1] += 1*sign2
-                else:
-                    final_frag_list[f2] = [len(final_frag_list), 1*sign2]
-            self.get_next_layer(next_layer2, final_frag_list, sign2)
-
-    def pie(self, primary_frags):
-        """
-        This function expects a dictionary of the following form:
-            [(3,6,7,8)] = [frag#, frag coeff]
-                 ^           ^        ^
-                 |           |        |
-                 a           b        c
-            a = sorted tuple of primitives. i.e,  tuple(sorted(set(f)))
-            b = index of fragment
-            c = fragment coefficient. I assume these will all start out == 1
-
-        """
-
-        final_frag_list = cp.deepcopy(primary_frags)
-        sign = -1
-        for f1 in primary_frags:
-            next_layer = {}
-            layer = 0
-            frags_curr = primary_frags
-            for f2 in frags_curr:
-                if frags_curr[f1][0] >= frags_curr[f2][0]:
-                    continue
-                f12 = tuple(sorted(set(f1).intersection(f2)))
-                if len(f12) > 0:
-                    if f12 in next_layer:
-                        next_layer[f12][1] += 1
-                    else:
-                        next_layer[f12] = [len(next_layer), 1]
-
-            for f2 in next_layer:
-                if f2 in final_frag_list:
-                    final_frag_list[f2][1] += 1*sign
-                else:
-                    final_frag_list[f2] = [len(final_frag_list), 1*sign]
-
-            self.get_next_layer(next_layer, final_frag_list, sign)
-
-        return final_frag_list
-    '''
-
     def make_frag_objects(self, final_frag_list):
         self.frags = []
         for frag in final_frag_list:
@@ -242,7 +180,7 @@ class Molecule:
         meta = open(str(scratchdir)+"/"+str(self.file_name).replace(".cml","")+"_CML_list", "a")
         meta.write(str(dst_file)+"\n")
 
-    def write_cml(self, frag, dst_file):
+    def write_cml(self, frag, dst_file, args):
         copyfile(self.file_name, dst_file)
         tree = ET.parse(dst_file)
         root = tree.getroot()
@@ -272,6 +210,12 @@ class Molecule:
             new_atom.attrib['x3']=root[0][bond.leave].attrib['x3']
             new_atom.attrib['y3']=root[0][bond.leave].attrib['y3']
             new_atom.attrib['z3']=root[0][bond.leave].attrib['z3']
+        child = ET.Element("theory", name=args['method'])
+        root.append(child)
+        child2 = ET.Element("basis", name=args['basis'])
+        root.append(child2)
+        child3 = ET.Element("sign", name=str(args['sign']))
+        root.append(child3)
         tree.write(dst_file)
 
 
