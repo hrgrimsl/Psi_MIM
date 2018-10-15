@@ -66,8 +66,8 @@ def run_scf_template(name, **kwargs):
     #geom1py = dcp.geometry().to_array()
     #ofile = open("geom", "w")
     #ofile.write(str(geom1py))
-    os.system("python update_cml.py geom "+file_name)
-    os.system('python energy_wrapper.py '+file_name+" -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
+    os.system("python3 update_cml.py geom "+file_name)
+    os.system('python3 energy_wrapper.py '+file_name+" -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
     efile = open(str(scratchdir)+"/amen","r")
     energy = float(efile.read())
     dcp = kwargs.get('molecule')
@@ -75,7 +75,7 @@ def run_scf_template(name, **kwargs):
     geom1py = dcp.geometry().to_array()
     ofile = open("geom", "w")
     ofile.write(str(geom1py))
-    os.system("python update_cml.py geom "+file_name)
+    os.system("python3 update_cml.py geom "+file_name)
     psi4.core.set_variable('CURRENT ENERGY', float(energy))
     return energy
     '''
@@ -92,8 +92,8 @@ def run_scf_template_grad(name, **kwargs):
     basis = psi4.core.BasisSet.build(dcp, "ORBITAL", 'STO-3G')
     wfn = psi4.core.Wavefunction(dcp, basis)
     #os.system("cd /home/harper/PIWS")
-    os.system("python update_cml.py "+scratchdir+"/geom "+file_name)
-    os.system('python grad_wrapper.py '+system_name+".cml -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
+    os.system("python3 update_cml.py "+scratchdir+"/geom "+file_name)
+    os.system('python3 grad_wrapper.py '+system_name+".cml -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
     gfile = open(scratchdir+"/timshel","r")
     grad = []
     for line in gfile.readlines():
@@ -108,7 +108,7 @@ def run_scf_template_grad(name, **kwargs):
     ofile.close()
     ofile = open(scratchdir+"/geom", "w")
     ofile.write(str(geom1py))
-    os.system("python update_cml.py "+scratchdir+"/geom "+file_name)
+    os.system("python3 update_cml.py "+scratchdir+"/geom "+file_name)
     grad = psi4.core.Matrix.from_array(grad)
     wfn.set_gradient(grad)
     gfile.close()
