@@ -11,6 +11,10 @@ You will need a working Psi4 installation; binary and source should both work.  
 
 http://www.psicode.org/psi4manual/master/build_obtaining.html#how-to-obtain-psi4-start-with-find-the-code-quiz-end-in-top-level-psi4-dir
 
+Psi4 will need to be in your python path as a python module to be called successfully.  Some support available here:
+
+http://www.psicode.org/psi4manual/master/psiapi.html
+
 To test if it is working, call:
 
 psi4 psicarbonyl out.dat
