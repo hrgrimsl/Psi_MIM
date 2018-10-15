@@ -7,36 +7,21 @@ import os
 
 from frag_classes import *
 from frag_methods import *
-#from cython_pie import *
 import cython_pie
-
-
 
 def add_up_atoms(frag_list, n_atoms):
     mult = [0]*n_atoms
     for frag in frag_list:
         for atom in frag.atoms:
             mult[atom] += frag.order
-    print(" Number of times each atom is counted:")
+    print("Number of times each atom is counted:")
     print(mult)
 
-'''
-#   Setup input arguments
-parser = argparse.ArgumentParser(description='Creates a set of fragments from a cml file',
-formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-parser.add_argument('name', nargs=1, help='CML file to process')
-parser.add_argument('-n','--eta', type=int, default=1, help='Which eta to use?', required=False)
-parser.add_argument('-r','--radius', type=float, help='Specifies radius for fragmentation (NYI)', required=False)
-parser.add_argument('-s','--scratch', type=str, help='Name of scratch directory', default="./scr", required=False)
-args = vars(parser.parse_args())
-'''
-def Fragment(args):
+def Fragment_Verb(args, index):
     file_name = args['name']
     file_name = file_name[0]
     assert(file_name[-3:] == "cml")
-    print(" Process file:", file_name)
-
+    scratchdir = args['scratch']
     covrad = form_covalent_radii()
     eta = int(args['eta'])
     full_system = Molecule()
@@ -49,19 +34,24 @@ def Fragment(args):
     full_system.cull_frags()
     full_system.finalize_first_frags()
     primary_frags = full_system.construct_frag_dict()
-
-    #Line in question
     final_frag_list = cython_pie.cython_pie(primary_frags)
     full_system.make_frag_objects(final_frag_list)
-    scratchdir = str(args['scratch'])
-    if os.path.exists(str(scratchdir)):
-        os.system('rm -r '+str(scratchdir))
-    os.system('mkdir '+str(scratchdir))
-    index = 0
+    index += 1
     for frag in full_system.frags:
         if frag.order!=0:
             full_system.append_meta_list(frag, scratchdir, index)
             dst_file = str(scratchdir)+"/"+str(file_name).replace(".cml","")+"_"+str(index)+"_"+str(frag.order)+".cml"
-            full_system.write_cml(frag, dst_file)
+            full_system.write_cml(frag, dst_file, args)
             index += 1
-    print(len(full_system.frags))
+    return index
+
+def Super_Fragment(core_args, dict_list):
+    if os.path.exists(core_args['scratch']+'/cmls'):
+        os.system(('rm -r '+core_args['scratch']+'/cmls'))
+    os.system(('mkdir '+core_args['scratch']+'/cmls'))
+    metaname = str(core_args['scratch'])+"/cmls/"+str(core_args['name'][0]).replace('.cml',"_CML_list")
+    meta = open(metaname, "w")
+    scratchdir = str(core_args['scratch'])
+    index = 0
+    for dict in dict_list:
+        index = Fragment_Verb(dict, index)
