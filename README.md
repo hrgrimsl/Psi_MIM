@@ -3,6 +3,10 @@ Clone this repo with:
 
 git clone https://github.com/hrgrimsl/Psi_MIM.git
 
+then from inside the Psi_MIM directory, use:
+
+python setup.py build_ext --inplace
+
 You will need a working Psi4 installation; binary and source should both work.  Instructions available here:
 
 http://www.psicode.org/psi4manual/master/build_obtaining.html#how-to-obtain-psi4-start-with-find-the-code-quiz-end-in-top-level-psi4-dir
