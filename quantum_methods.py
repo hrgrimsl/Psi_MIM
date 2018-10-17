@@ -37,10 +37,11 @@ def Compute_Gradient(args, root):
     if os.path.exists(args['scratch']+'/res'):
         os.system('rm -r '+str(args['scratch']+'/res'))
     os.system('mkdir '+str(args['scratch']+'/res'))
-    for cml_file in os.listdir(args['scratch']+"/cmls"):
-        if ".cml" in cml_file:
-            cml_file_name = args['scratch']+"/cmls/"+cml_file
-            os.system('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
+    #for cml_file in os.listdir(args['scratch']+"/cmls"):
+    #    if ".cml" in cml_file:
+    #        cml_file_name = args['scratch']+"/cmls/"+cml_file
+    #        os.system('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
+    os.system('./grad_parallel.sh '+str(name)+' '+args['scratch'])
     for file in os.listdir(args['scratch']+"/res"):
         frag = open(args['scratch']+"/res/"+file, 'r')
         lines = frag.readlines()
