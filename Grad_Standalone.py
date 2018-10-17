@@ -27,7 +27,7 @@ def Get_Geom_String(cml):
     return geom_string
 
 def G_Thread(cml_file):
-    np.set_printoptions(10000000000000)
+    np.set_printoptions(threshold = 10000000000000)
     tree = ET.parse(cml_file)
     root = tree.getroot()
     method = root[2].attrib['name']
