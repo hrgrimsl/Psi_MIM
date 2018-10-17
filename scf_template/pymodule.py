@@ -40,7 +40,7 @@ import argparse, re
 import xml.etree.ElementTree as ET
 
 
-
+np.set_printoptions(threshold = 10000000000000)
 
 
 def run_scf_template(name, **kwargs):
