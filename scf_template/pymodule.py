@@ -34,7 +34,7 @@ import numpy as np
 import time
 import psi4.driver.p4util as p4util
 from psi4.driver.procrouting import proc_util
-np.set_printoptions(precision=11)
+np.set_printoptions(precision=11, threshold = 100000000000000000)
 
 os.system('cd ..')
 os.system('pwd')
