@@ -39,6 +39,7 @@ def G_Thread(cml_file):
     psi4.set_options({'FAIL_ON_MAXITER': False})
     psi4.geometry(geom)
     psi4.core.be_quiet()
+    psi4.set_memory('1 GB')
     grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
     energy = wfn.energy()*order
     grad = np.asarray(grad)
