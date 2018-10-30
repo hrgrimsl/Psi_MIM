@@ -3,7 +3,9 @@
 #all arguments passed to the script
 export args="$@"
 
-scratchdir="scr"
+#scratchdir="scr"
+set -- $args
+scratchdir=$2
 #cmlfiles=$( ls $scratchdir/*/*.cml )
 cmlfiles=$( ls $scratchdir/cmls/*.cml )
 
