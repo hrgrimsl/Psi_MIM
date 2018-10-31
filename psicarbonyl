@@ -11,6 +11,7 @@ SI = {
 'frags': '1/3',
 'methods': 'scf/scf',
 'scratch': 'scr'
+'envir': 'local'
 }
 
 sifile = open('SI.txt', 'w')
@@ -19,6 +20,7 @@ sifile.write(SI['frags']+'\n')
 sifile.write(SI['methods']+'\n')
 sifile.write(SI['basis']+'\n')
 sifile.write(SI['scratch']+'\n')
+sifile.write(SI['envir']+'\n')
 sifile.close()
 import scf_template
 
