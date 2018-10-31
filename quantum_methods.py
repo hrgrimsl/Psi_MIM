@@ -29,6 +29,7 @@ def Compute_Gradient(args, root):
     name = str(args['og_name']).replace('[','')
     name = name.replace(']','')
     name = name.replace('\'','')
+    environment = args['environment']
     tree = ET.parse(name)
     root = tree.getroot()
     for atom in root[0]:
@@ -37,11 +38,13 @@ def Compute_Gradient(args, root):
     if os.path.exists(args['scratch']+'/res'):
         os.system('rm -r '+str(args['scratch']+'/res'))
     os.system('mkdir '+str(args['scratch']+'/res'))
-    #for cml_file in os.listdir(args['scratch']+"/cmls"):
-    #    if ".cml" in cml_file:
-    #        cml_file_name = args['scratch']+"/cmls/"+cml_file
-    #        os.system('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
-    os.system('./grad_parallel.sh '+str(name)+' '+args['scratch'])
+    if environment == 'local':
+        for cml_file in os.listdir(args['scratch']+"/cmls"):
+            if ".cml" in cml_file:
+                cml_file_name = args['scratch']+"/cmls/"+cml_file
+                os.system('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
+    else if environment == 'cluster':
+        os.system('./grad_parallel.sh '+str(name)+' '+args['scratch'])
     for file in os.listdir(args['scratch']+"/res"):
         frag = open(args['scratch']+"/res/"+file, 'r')
         lines = frag.readlines()
