@@ -5,7 +5,7 @@ import numpy as np
 import copy
 import multiprocessing
 from multiprocessing import Pool
-
+from subprocess import Popen
 
 def Get_Order(cml):
     cml = cml.replace(".cml","")
@@ -39,10 +39,17 @@ def Compute_Gradient(args, root):
         os.system('rm -r '+str(args['scratch']+'/res'))
     os.system('mkdir '+str(args['scratch']+'/res'))
     if environment == 'local':
+        jobs = []
+        pops = []
         for cml_file in os.listdir(args['scratch']+"/cmls"):
             if ".cml" in cml_file:
                 cml_file_name = args['scratch']+"/cmls/"+cml_file
-                os.system('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
+                jobs.append('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
+        for job in jobs:
+            pops.append(Popen(job, shell=True))
+        for pop in pops:
+            pop.wait()
+            pop.terminate()
     elif environment == 'cluster':
         os.system('./grad_parallel.sh '+str(name)+' '+args['scratch'])
     for file in os.listdir(args['scratch']+"/res"):
