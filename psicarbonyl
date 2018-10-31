@@ -10,7 +10,7 @@ SI = {
 'basis': 'sto-3g/sto-3g',
 'frags': '1/3',
 'methods': 'scf/scf',
-'scratch': 'scr'
+'scratch': 'scr',
 'envir': 'local'
 }
 
