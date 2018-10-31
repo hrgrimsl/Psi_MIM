@@ -66,6 +66,7 @@ def run_scf_template_grad(name, **kwargs):
     lil_bas = str(bases[0])
     big_bas = str(bases[1])
     scratchdir = str(lines[4])
+    envir = str(lines[5])
 
     args = {
     'basis': lil_bas,
@@ -75,7 +76,8 @@ def run_scf_template_grad(name, **kwargs):
     'theorym': lil_met,
     'theoryw': big_met,
     'scratch': scratchdir,
-    'og_name': file_name
+    'og_name': file_name,
+    'environment': envir
     }
 
     small_good_args = {
