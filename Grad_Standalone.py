@@ -30,15 +30,16 @@ def G_Thread(cml_file):
     np.set_printoptions(threshold = 10000000000000)
     tree = ET.parse(cml_file)
     root = tree.getroot()
-    method = root[2].attrib['name']
-    basis = root[3].attrib['name']
-    sign = int(root[4].attrib['name'])
+    method = root.find('theory').attrib['name']
+    basis = root.find('basis').attrib['name']
+    sign = int(root.find('sign').attrib['name'])
+
     import psi4
     order = Get_Order(cml_file)
     geom = Get_Geom_String(cml_file)
     if method=='mcscf' or method=='MCSCF' or method=='casscf' or method=='CASSCF':
         from Occupation_Parse import Parse
-        stuff = Parse(cml)
+        stuff = Parse(cml_file)
         psi4.set_memory('1 GB')
         psi4.geometry(stuff[2])
         opts = {'reference': 'rohf',
