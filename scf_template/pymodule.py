@@ -34,89 +34,113 @@ import numpy as np
 import time
 import psi4.driver.p4util as p4util
 from psi4.driver.procrouting import proc_util
-np.set_printoptions(precision=11, threshold = 100000000000000000)
 
-os.system('cd ..')
-os.system('pwd')
-si_file = './SI.txt'
-sifile = open(str(si_file), 'r')
-lines = sifile.readlines()
-for i in range(0, len(lines)):
-    lines[i] = (str(lines[i])).strip('\n')
-print(lines)
-system_name = str(lines[0])
-file_name = str(system_name) + ".cml"
-etas = lines[1].split("/")
-lil_eta = str(etas[0])
-big_eta = str(etas[1])
-mets = lines[2].split("/")
-lil_met = str(mets[0])
-big_met = str(mets[1])
-bases = lines[3].split("/")
-lil_bas = str(bases[0])
-big_bas = str(bases[1])
-scratchdir = str(lines[4])
-if os.path.exists(scratchdir)==False:
-    os.system('mkdir '+scratchdir)
+import quantum_methods
+import frag_script
+import argparse, re
+import xml.etree.ElementTree as ET
+
+
+
+np.set_printoptions(threshold = 10000000000000)
 
 
 def run_scf_template(name, **kwargs):
-    '''
-    #dcp = kwargs.get('molecule')
-    #geom1py = dcp.geometry().to_array()
-    #ofile = open("geom", "w")
-    #ofile.write(str(geom1py))
-    os.system("python3 update_cml.py geom "+file_name)
-    os.system('python3 energy_wrapper.py '+file_name+" -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
-    efile = open(str(scratchdir)+"/amen","r")
-    energy = float(efile.read())
-    dcp = kwargs.get('molecule')
-    #dcp.update_geometry()
-    geom1py = dcp.geometry().to_array()
-    ofile = open("geom", "w")
-    ofile.write(str(geom1py))
-    os.system("python3 update_cml.py geom "+file_name)
-    psi4.core.set_variable('CURRENT ENERGY', float(energy))
-    return energy
-    '''
     return psi4.core.get_variable('CURRENT ENERGY')
 
 def run_scf_template_grad(name, **kwargs):
+    np.set_printoptions(precision=11)
+    os.system('cd ..')
+    si_file = './SI.txt'
+    sifile = open(str(si_file), 'r')
+    lines = sifile.readlines()
+    for i in range(0, len(lines)):
+        lines[i] = (str(lines[i])).strip('\n')
+    system_name = str(lines[0])
+    file_name = str(system_name) + ".cml"
+    etas = lines[1].split("/")
+    lil_eta = str(etas[0])
+    big_eta = str(etas[1])
+    mets = lines[2].split("/")
+    lil_met = str(mets[0])
+    big_met = str(mets[1])
+    bases = lines[3].split("/")
+    lil_bas = str(bases[0])
+    big_bas = str(bases[1])
+    scratchdir = str(lines[4])
+    envir = str(lines[5])
+
+    args = {
+    'basis': lil_bas,
+    'name': [file_name],
+    'etam': lil_eta,
+    'etaw': big_eta,
+    'theorym': lil_met,
+    'theoryw': big_met,
+    'scratch': scratchdir,
+    'og_name': file_name,
+    'environment': envir
+    }
+
+    small_good_args = {
+    'basis' : args['basis'],
+    'name' : args['name'],
+    'eta' : args['etam'],
+    'method' : args['theorym'],
+    'scratch': args['scratch']+"/cmls",
+    'sign': 1,
+    'og_name': file_name
+    }
+    small_bad_args = {
+    'basis' : args['basis'],
+    'name' : args['name'],
+    'eta' : args['etam'],
+    'method' : args['theoryw'],
+    'scratch': args['scratch']+"/cmls",
+    'sign': -1,
+    'og_name': file_name
+    }
+    big_args = {
+    'basis' : args['basis'],
+    'name' : args['name'],
+    'eta' : args['etaw'],
+    'method' : args['theoryw'],
+    'scratch': args['scratch']+"/cmls",
+    'sign' : 1,
+    'og_name': file_name
+    }
+
+    file_name = args['name'][0]
+    tree = ET.parse(file_name)
+    root = tree.getroot()
+
     dcp = kwargs.get('molecule')
-    geom1py = dcp.geometry().to_array()
+    geom1py = np.asarray(dcp.geometry().to_array())
+    if os.path.exists(scratchdir)==False:
+        os.system('mkdir '+scratchdir)
     ofile = open(scratchdir+"/geom", "w")
     ofile.write(str(geom1py))
     ofile.close()
-    #ofile = open(scratchdir+"/geom","r")
-    # new skeleton wavefunction w/mol, highest-SCF basis (just to choose one), & not energy
     basis = psi4.core.BasisSet.build(dcp, "ORBITAL", 'STO-3G')
     wfn = psi4.core.Wavefunction(dcp, basis)
-    #os.system("cd /home/harper/PIWS")
-    os.system("python3 update_cml.py "+scratchdir+"/geom "+file_name)
-    os.system('python3 grad_wrapper.py '+system_name+".cml -nm "+lil_eta+" -tm "+lil_met+" -b "+lil_bas+" -nw "+big_eta+" -tw "+big_met+" -s "+scratchdir)
-    gfile = open(scratchdir+"/timshel","r")
-    grad = []
-    for line in gfile.readlines():
-        line = line.replace("\n",'')
-        line = line.replace('[','')
-        line = line.replace(']','')
-        line = line.split()
-        grad.append([float(line[0]), float(line[1]), float(line[2])])
-    grad = np.asarray(grad, float)
+    os.system("python update_cml.py "+scratchdir+"/geom "+file_name)
+    frag_script.Super_Fragment(args, [big_args, small_bad_args, small_good_args])
+    eg = quantum_methods.Compute_Gradient(args, root)
+    true_energy = eg[1]
+    true_gradient = eg[0]
+    
     #dcp.update_geometry()
     geom1py = dcp.geometry().to_array()
     ofile.close()
     ofile = open(scratchdir+"/geom", "w")
     ofile.write(str(geom1py))
-    os.system("python3 update_cml.py "+scratchdir+"/geom "+file_name)
+    grad = true_gradient
+    energy = true_energy
     grad = psi4.core.Matrix.from_array(grad)
     wfn.set_gradient(grad)
-    gfile.close()
-
-    efile = open(str(scratchdir)+"/amen","r")
-    energy = float(efile.read())
     psi4.core.set_variable('CURRENT ENERGY', float(energy))
-    #run_scf_template(name, **kwargs)
+    print(true_gradient)
+    print(energy)
     return (wfn)
 
 # Integration with driver routines
