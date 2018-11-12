@@ -36,11 +36,23 @@ def G_Thread(cml_file):
     import psi4
     order = Get_Order(cml_file)
     geom = Get_Geom_String(cml_file)
-    psi4.set_options({'FAIL_ON_MAXITER': False})
-    psi4.geometry(geom)
-    psi4.core.be_quiet()
-    psi4.set_memory('1 GB')
-    grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
+    if method=='mcscf' or method=='MCSCF' or method=='casscf' or method=='CASSCF':
+        from Occupation_Parse import Parse
+        stuff = Parse(cml)
+        psi4.set_memory('1 GB')
+        psi4.geometry(stuff[2])
+        opts = {'reference': 'rohf',
+        'frozen_docc': [stuff[0]],
+        'active': [stuff[1]]
+               }
+        psi4.set_options(opts)
+        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
+    else:
+        psi4.set_options({'FAIL_ON_MAXITER': False})
+        psi4.geometry(geom)
+        psi4.core.be_quiet()
+        psi4.set_memory('1 GB')
+        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
     energy = wfn.energy()*order
     grad = np.asarray(grad)
     true_grad = Interpret(grad, cml_file)*order
