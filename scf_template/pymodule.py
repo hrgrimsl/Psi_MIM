@@ -51,7 +51,10 @@ def run_scf_template(name, **kwargs):
 def run_scf_template_grad(name, **kwargs):
     np.set_printoptions(precision=11)
     os.system('cd ..')
-    si_file = './SI.txt'
+    if 'si' not in kwargs:
+        si_file = './SI.txt'
+    else:
+        si_file = kwargs['si']
     sifile = open(str(si_file), 'r')
     lines = sifile.readlines()
     for i in range(0, len(lines)):
@@ -128,7 +131,7 @@ def run_scf_template_grad(name, **kwargs):
     eg = quantum_methods.Compute_Gradient(args, root)
     true_energy = eg[1]
     true_gradient = eg[0]
-    
+
     #dcp.update_geometry()
     geom1py = dcp.geometry().to_array()
     ofile.close()
