@@ -188,7 +188,7 @@ class Molecule:
         mult = 1
         for target in root.findall('target'):
             id = int(target.attrib['id'])-1
-            if id not in frag.atoms:
+            if id in frag.atoms:
                 charge += int(target.attrib['charge'])
                 mult += int(target.attrib['mult'])
         for atom in range(0, len(root[0])):
