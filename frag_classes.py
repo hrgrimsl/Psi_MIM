@@ -184,6 +184,13 @@ class Molecule:
         copyfile(self.file_name, dst_file)
         tree = ET.parse(dst_file)
         root = tree.getroot()
+        charge = 0
+        mult = 1
+        for target in root.findall('target'):
+            id = int(target.attrib['id'])-1
+            if 'X' not in root[0][id].attrib['elementType']:
+                charge += int(target.attrib['charge'])
+                mult += int(target.attrib['mult'])
         for atom in range(0, len(root[0])):
             if atom not in frag.atoms:
                 root[0][atom].attrib['elementType'] = 'X'
@@ -210,12 +217,17 @@ class Molecule:
             new_atom.attrib['x3']=root[0][bond.leave].attrib['x3']
             new_atom.attrib['y3']=root[0][bond.leave].attrib['y3']
             new_atom.attrib['z3']=root[0][bond.leave].attrib['z3']
-        child = ET.Element("theory", name=args['method'])
+        if mult==1:
+            child = ET.Element("theory", name=args['method'])
+        else:
+            child = ET.Element("theory", name='MCSCF')
         root.append(child)
         child2 = ET.Element("basis", name=args['basis'])
         root.append(child2)
         child3 = ET.Element("sign", name=str(args['sign']))
         root.append(child3)
+        for i in root.findall('chargemult'):
+            i.attrib['cm']=str(charge)+' '+str(mult)
         tree.write(dst_file)
 
 
