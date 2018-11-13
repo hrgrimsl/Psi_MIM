@@ -1,0 +1,42 @@
+# PYTHONPATH must include directory above plugin directory.
+#     Define either externally or here, then import plugin.
+sys.path.insert(0, '.')
+
+import os
+
+#Set this up like a dictionary
+SI = {
+'name': 'methoxy',
+'basis': 'cc-pvtz/cc-pvtz',
+'frags': '1/1',
+'methods': 'scf/scf',
+'scratch': 'scr',
+'envir': 'local'
+}
+
+sifile = open('SI.txt', 'w')
+sifile.write(SI['name']+'\n')
+sifile.write(SI['frags']+'\n')
+sifile.write(SI['methods']+'\n')
+sifile.write(SI['basis']+'\n')
+sifile.write(SI['scratch']+'\n')
+sifile.write(SI['envir']+'\n')
+sifile.close()
+import scf_template
+
+molecule {
+0 3
+   C       -4.93495        0.38962       -0.28226
+   C       -3.86844        1.42072        0.15950
+   H       -4.58492        0.20934       -1.45498
+   H       -5.94813        0.80719       -0.21484
+   H       -4.90686       -0.52299        0.32750
+   C       -2.39954        0.78439        0.07815
+   O       -2.05165        0.57504       -1.19977
+   H       -2.41399       -0.09357        0.74845
+   H       -1.75257        1.47150        0.65276
+   O       -3.95736        1.84840        1.30157
+   H       -3.90353        2.22505       -0.59321
+}
+
+optimize('scf_template')
