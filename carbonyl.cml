@@ -40,4 +40,5 @@
   <bond atomRefs2="a15 a18" order="1" />
   <bond atomRefs2="a12 a19" order="2" />
  </bondArray>
+ </chargemult 'cm=0 1'/>
 </molecule>
