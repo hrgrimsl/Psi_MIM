@@ -1,0 +1,9 @@
+&GATEWAY
+ coord=nv_diamond_57_1.xyz
+ basis=cc-pvtz
+&SEWARD
+&CASSCF
+ CHARGE = 0
+ SPIN = 2
+&ALASKA
+&SLAPAF

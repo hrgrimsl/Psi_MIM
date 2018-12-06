@@ -47,9 +47,8 @@ def Compute_Gradient(args, root):
                 jobs.append('python Grad_Standalone.py '+str(cml_file_name)+' '+str(name)+' '+args['scratch'])
         for job in jobs:
             pops.append(Popen(job, shell=True))
-        for pop in pops:
-            pop.wait()
-            pop.terminate()
+            pops[-1].wait()
+            pops[-1].terminate()
     elif environment == 'cluster':
         os.system('./grad_parallel.sh '+str(name)+' '+args['scratch'])
     for file in os.listdir(args['scratch']+"/res"):

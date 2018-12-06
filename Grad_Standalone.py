@@ -3,6 +3,7 @@ import os
 import argparse, re
 import numpy as np
 import copy
+import Molcas_Methods
 from sys import argv
 
 script, first, second, third = argv
@@ -20,10 +21,12 @@ def Get_Order(cml):
 def Get_Geom_String(cml):
     tree = ET.parse(cml)
     root = tree.getroot()
+
     geom_string = ''
     for atom in root[0]:
         if 'X' not in str(atom.attrib['elementType']):
             geom_string = geom_string+" "+str(atom.attrib['elementType'])+" "+str(atom.attrib['x3'])+" "+str(atom.attrib['y3'])+" "+str(atom.attrib['z3'])+"\n"
+    geom_string+='units angstrom'
     return geom_string
 
 def G_Thread(cml_file):
@@ -33,29 +36,20 @@ def G_Thread(cml_file):
     method = root.find('theory').attrib['name']
     basis = root.find('basis').attrib['name']
     sign = int(root.find('sign').attrib['name'])
-
+    chargemult = str(root.find('chargemult').attrib['cm'])
+    charge = int(chargemult.split(' ')[1])
     import psi4
     order = Get_Order(cml_file)
     geom = Get_Geom_String(cml_file)
     if method=='mcscf' or method=='MCSCF' or method=='casscf' or method=='CASSCF':
-        from Occupation_Parse import Parse
-        stuff = Parse(cml_file)
-        psi4.set_memory('1 GB')
-        psi4.geometry(stuff[2])
-        opts = {'reference': 'rohf',
-        'frozen_docc': [stuff[0]],
-        'active': [stuff[1]]
-               }
-        psi4.set_options(opts)
-        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
+        grad, energy = Molcas_Methods.Molcas_Eval(cml_file, scratchdir)
     else:
-        psi4.set_options({'FAIL_ON_MAXITER': False})
         psi4.geometry(geom)
         psi4.core.be_quiet()
         psi4.set_memory('1 GB')
         psi4.core.be_quiet()
-        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
-    energy = wfn.energy()*order
+        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True, CFOUR_CHARGE=charge)
+        energy = wfn.energy()*order
     grad = np.asarray(grad)
     true_grad = Interpret(grad, cml_file)*order
     return tuple([sign*true_grad, sign*energy])

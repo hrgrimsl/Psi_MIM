@@ -1,0 +1,6 @@
+nvdiamond
+-1/1
+scf/scf
+sto-3g/sto-3g
+scr
+local
