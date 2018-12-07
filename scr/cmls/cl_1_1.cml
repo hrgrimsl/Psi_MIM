@@ -1,0 +1,9 @@
+<molecule>
+ <atomArray>
+  <atom elementType="Cl" id="a1" x3="0.0" y3="0.0" z3="0.0" />
+ </atomArray>
+ <bondArray>
+ </bondArray>
+ <target charge="1" id="1" mult="0" />
+ <chargemult cm="1 1" />
+<theory name="scf" /><basis name="cc-pvtz" /><sign name="1" /></molecule>

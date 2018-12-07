@@ -20,9 +20,10 @@ def Get_Order(cml):
 
 def Get_Geom_String(cml):
     tree = ET.parse(cml)
-    root = tree.getroot()
-
-    geom_string = ''
+    root = tree.getroot() 
+    chargemult = str(root.find('chargemult').attrib['cm'])
+    charge = int(chargemult.split(' ')[1])
+    geom_string = '\n '+chargemult+'\n'
     for atom in root[0]:
         if 'X' not in str(atom.attrib['elementType']):
             geom_string = geom_string+" "+str(atom.attrib['elementType'])+" "+str(atom.attrib['x3'])+" "+str(atom.attrib['y3'])+" "+str(atom.attrib['z3'])+"\n"
@@ -48,7 +49,7 @@ def G_Thread(cml_file):
         psi4.core.be_quiet()
         psi4.set_memory('1 GB')
         psi4.core.be_quiet()
-        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True, CFOUR_CHARGE=charge)
+        grad, wfn = psi4.gradient(method+'/'+basis, return_wfn=True)
         energy = wfn.energy()*order
     grad = np.asarray(grad)
     true_grad = Interpret(grad, cml_file)*order

@@ -1,0 +1,34 @@
+# PYTHONPATH must include directory above plugin directory.
+#     Define either externally or here, then import plugin.
+sys.path.insert(0, '.')
+
+import os
+
+#Set this up like a dictionary
+SI = {
+'name': 'cl',
+'basis': 'cc-pvtz/cc-pvtz',
+'frags': '-1/1',
+'methods': 'scf/scf',
+'scratch': 'scr',
+'envir': 'local'
+}
+
+SIname = './si2.txt'
+os.system('rm -r -f '+str(SIname))
+sifile = open(SIname, 'w')
+sifile.write(SI['name']+'\n')
+sifile.write(SI['frags']+'\n')
+sifile.write(SI['methods']+'\n')
+sifile.write(SI['basis']+'\n')
+sifile.write(SI['scratch']+'\n')
+sifile.write(SI['envir']+'\n')
+sifile.close()
+import scf_template
+
+molecule {
+-1 1
+   Cl       -0.67576        2.83228        0.01829
+}
+
+gradient('scf_template', si= SIname)

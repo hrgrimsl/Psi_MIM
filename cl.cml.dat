@@ -1,0 +1,48 @@
+
+    -----------------------------------------------------------------------
+          Psi4: An Open-Source Ab Initio Electronic Structure Package
+                               Psi4 1.1rc1 
+
+                         Git: Rev {HEAD} 6db9b1f 
+
+
+    R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett,
+    A. E. DePrince III, E. G. Hohenstein, U. Bozkaya, A. Yu. Sokolov,
+    R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James,
+    H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard,
+    P. Verma, H. F. Schaefer III, K. Patkowski, R. A. King, E. F. Valeev,
+    F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill,
+    submitted.
+
+    -----------------------------------------------------------------------
+
+
+    Psi4 started on: Friday, 07 December 2018 10:16AM
+
+    Process ID:   3995
+    PSIDATADIR: /home/hrgrimsl/psi4conda/share/psi4
+    Memory:     500.0 MiB
+    Threads:    1
+    
+  ==> Input File <==
+
+--------------------------------------------------------------------------
+<molecule>
+ <atomArray>
+  <atom elementType="Cl" id="a1" x3="-3.417772290942555" y3="0.3976511577734282" z3="0.005585631109557074" />
+ </atomArray>
+ <bondArray>
+ </bondArray>
+ <target id='1' charge='-1' mult='0' />
+ <chargemult cm="-1 1" />
+</molecule>
+--------------------------------------------------------------------------
+
+Traceback (most recent call last):
+  File "/home/hrgrimsl/psi4conda/bin/psi4", line 247, in <module>
+    exec(content)
+
+SyntaxError: invalid syntax (<string>, line 19)
+
+*** Psi4 encountered an error. Buy a developer more coffee!
+*** Resources and help at github.com/psi4/psi4.

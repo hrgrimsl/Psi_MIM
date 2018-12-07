@@ -1,0 +1,23 @@
+<module value="gateway">
+</module>
+<module value="seward">
+<module value="gateway">
+</module>
+<module value="seward">
+</module>
+<module value="rasscf">
+<module value="gateway">
+<module value="gateway">
+</module>
+<module value="seward">
+</module>
+<module value="rasscf">
+<FormalCharge appear="Total charge" units="a.u" type="real"> -0.00000000</FormalCharge>
+<dipole appear="Dipole moment" units="Debye" level="1" type="real" nx="3"><v> 0.09382057</v><v> -0.79073748</v><v> 0.02946340</v></dipole>
+</module>
+<module value="alaska">
+</module>
+<module value="slapaf">
+</module>
+<module value="gateway">
+</module>

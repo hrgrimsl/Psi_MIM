@@ -1,6 +1,6 @@
-carbonyl
-1/3
+cl
+-1/1
 scf/scf
-sto-3g/sto-3g
+cc-pvtz/cc-pvtz
 scr
 local
